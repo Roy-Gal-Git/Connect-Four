@@ -10,7 +10,7 @@ def checkWinSides(table, col, row, player):
 
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}! \\Sides')
+            print(f'The winner is player #{player}!')
             return True
 
         if row >= ROWMAX:
@@ -41,7 +41,7 @@ def checkWinDown(table, col, row, player):
 
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}! \\Down')
+            print(f'The winner is player #{player}!')
             return True
 
         if col >= COLMAX:
@@ -63,7 +63,7 @@ def checkWinDiagSEtoNW(table, col, row, player):
     row += 1
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player} \\SE2NW!')
+            print(f'The winner is player #{player}!')
             return True
 
         if direction == 'se':
@@ -96,7 +96,7 @@ def checkWinDiagNEtoSW(table, col, row, player):
 
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}! \\NE2SW')
+            print(f'The winner is player #{player}!')
             return True
 
         if direction == 'ne':

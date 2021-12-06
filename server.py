@@ -11,9 +11,13 @@ table = [
 
 check = [checkWinDown, checkWinSides, checkWinDiagNEtoSW, checkWinDiagSEtoNW]
 
-for func in check:
-    if func(table, 1, 4, 1):
-        break
+try:
+    for func in check:
+        if func(table, 1, 8, 1):
+            break
+except IndexError as e:
+    print(f'[ERROR] {e}')
+
 # checkWinDiagSEtoNW(table, 1, 4, 1)
 # checkWinDiagNEtoSW(table, 1, 4, 1)
 # checkWinSides(table, 0, 6, 1)
