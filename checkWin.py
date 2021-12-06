@@ -2,6 +2,59 @@ ROWMAX = 7
 COLMAX = 6
 
 
+# Checks if there's a win on the sides
+def checkWinSides(table, col, row, player):
+    direction = 'right'
+    counter = 1
+    row += 1
+
+    for i in range(5):
+        if counter == 4:
+            print(f'The winner is player #{player}! \\Sides')
+            return True
+
+        if row >= ROWMAX:
+            direction = 'left'
+            row -= counter + 1
+
+        if table[col][row] == player and direction == 'right':
+            counter += 1
+            row += 1
+
+        elif table[col][row] != player and direction == 'right':
+            direction = 'left'
+            row -= counter + 1
+
+        elif table[col][row] == player and direction == 'left':
+            counter += 1
+            row -= 1
+
+        elif table[col][row] != player and direction == 'left':
+            return False
+
+
+# Checks if there's a win downwards
+def checkWinDown(table, col, row, player):
+    direction = 'right'
+    counter = 1
+    col += 1
+
+    for i in range(5):
+        if counter == 4:
+            print(f'The winner is player #{player}! \\Down')
+            return True
+
+        if col >= COLMAX:
+            return False
+
+        if table[col][row] == player:
+            counter += 1
+            col += 1
+
+        else:
+            return False
+
+
 # Checks if there's a win diagonally from South-East to North-West
 def checkWinDiagSEtoNW(table, col, row, player):
     direction = 'se'
@@ -10,8 +63,8 @@ def checkWinDiagSEtoNW(table, col, row, player):
     row += 1
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}!')
-            return
+            print(f'The winner is player #{player} \\SE2NW!')
+            return True
 
         if direction == 'se':
             result = checkSE(table, col, row, player, direction, counter)
@@ -21,7 +74,7 @@ def checkWinDiagSEtoNW(table, col, row, player):
                 direction = result[2]
                 counter = result[3]
             else:
-                return
+                return False
 
         else:
             result = checkNW(table, col, row, player, direction, counter)
@@ -31,7 +84,7 @@ def checkWinDiagSEtoNW(table, col, row, player):
                 direction = result[2]
                 counter = result[3]
             else:
-                return
+                return False
         
 
 # Checks if there's a win diagonally from North-East to South-West
@@ -43,8 +96,8 @@ def checkWinDiagNEtoSW(table, col, row, player):
 
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}!')
-            return
+            print(f'The winner is player #{player}! \\NE2SW')
+            return True
 
         if direction == 'ne':
             result = checkNE(table, col, row, player, direction, counter)
@@ -54,7 +107,7 @@ def checkWinDiagNEtoSW(table, col, row, player):
                 direction = result[2]
                 counter = result[3]
             else:
-                return
+                return False
         
         else:
             result = checkSW(table, col, row, player, direction, counter)
@@ -64,9 +117,10 @@ def checkWinDiagNEtoSW(table, col, row, player):
                 direction = result[2]
                 counter = result[3]
             else:
-                return
-        
-# Diagonal helper-function
+                return False
+    
+
+# Diagonal helper-function 
 def checkSE(table, col, row, player, direction, counter):
     if col >= COLMAX or row >= ROWMAX:
         col -= counter + 1
@@ -143,32 +197,3 @@ def checkSW(table, col, row, player, direction, counter):
     return [col, row, direction, counter]
 
 
-# Checks if there's a win on the sides
-def checkWinSides(table, col, row, player):
-    direction = 'right'
-    counter = 1
-    row += 1
-
-    for i in range(5):
-        if counter == 4:
-            print(f'The winner is player #{player}!')
-            return
-            
-        if row >= ROWMAX:
-            direction = 'left'
-            row -= counter
-
-        if table[col][row] == player and direction == 'right':
-            counter += 1
-            row += 1
-        elif table[col][row] != player and direction == 'right':
-            direction = 'left'
-            row -= counter
-
-        if table[col][row] == player and direction == 'left':
-            counter += 1
-            row -= 1
-        elif table[col][row] != player and direction == 'right':
-            return
-
-    return
