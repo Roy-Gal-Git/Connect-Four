@@ -8,7 +8,7 @@ def checkWinDiagSEtoNW(table, col, row, player):
     counter = 1
     col += 1
     row += 1
-    while True:
+    for i in range(5):
         if counter == 4:
             print(f'The winner is player #{player}!')
             return
@@ -41,10 +41,11 @@ def checkWinDiagNEtoSW(table, col, row, player):
     col -= 1
     row += 1
 
-    while True:
+    for i in range(5):
         if counter == 4:
             print(f'The winner is player #{player}!')
             return
+
         if direction == 'ne':
             result = checkNE(table, col, row, player, direction, counter)
             if result:
@@ -148,10 +149,11 @@ def checkWinSides(table, col, row, player):
     counter = 1
     row += 1
 
-    while row <= ROWMAX and row >= 0:
+    for i in range(5):
         if counter == 4:
             print(f'The winner is player #{player}!')
             return
+            
         if row >= ROWMAX:
             direction = 'left'
             row -= counter
@@ -168,4 +170,5 @@ def checkWinSides(table, col, row, player):
             row -= 1
         elif table[col][row] != player and direction == 'right':
             return
+
     return

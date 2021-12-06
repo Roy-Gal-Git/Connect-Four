@@ -9,6 +9,6 @@ table = [
     [1, 0, 0, 0, 0, 0, 0]
 ]
 
-# checkWinDiagSEtoNW(table, 1, 4, 1)
-# checkWinDiagNEtoSW(table, 1, 4, 1)
+checkWinDiagSEtoNW(table, 1, 4, 1)
+checkWinDiagNEtoSW(table, 1, 4, 1)
 # checkWinSides(table, 4, 1, 1)
