@@ -20,7 +20,7 @@ def start_client():
     while table != "WIN!":
         printTable(table)
         
-        turn = input("Please enter a column, and a row the next turn: ")
+        turn = input("Please enter a column, and a row: ")
         turn = list(turn.split(' '))
         convertElementsToInt(turn)
         turn.append(PLAYER)
