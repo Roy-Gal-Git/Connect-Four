@@ -35,7 +35,7 @@ def checkWinSides(table, col, row, player):
 
 # Checks if there's a win downwards
 def checkWinDown(table, col, row, player):
-    direction = 'right'
+    
     counter = 1
     col += 1
 
