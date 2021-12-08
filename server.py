@@ -110,7 +110,6 @@ def handle_client1(conn, addr):
         win = False
 
         while not win:
-            print("START")
             data = json.loads(conn.recv(1024).decode(FORMAT))
             table[data[0]][data[1]] = data[2]
             win = isWin(checkWinFuncs, table, data[0], data[1], data[2])
