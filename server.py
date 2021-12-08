@@ -105,6 +105,7 @@ def handle_client1(conn, addr):
         player = str(threading.active_count() -1)
         conn.send(player.encode(FORMAT))
         conn.send(f'Welcome to Connect-Four!\nYou\'re player #{player}.'.encode(FORMAT))
+        time.sleep(0.2)
         conn.send(json.dumps(table).encode(FORMAT))
         data = [0, 0, 1]
         win = False
