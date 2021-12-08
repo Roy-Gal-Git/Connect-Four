@@ -194,5 +194,3 @@ def checkSW(table, col, row, player, direction, counter):
     
 
     return [col, row, direction, counter]
-
-
