@@ -1,35 +1,11 @@
 import socket, time, json
 from colors import *
-from checkWin import printTable, columnIndexByRow, coloredPrint
+from checkWin import printTable, columnIndexByRow, getRow, coloredPrint
 
 HOST = '127.0.0.1'
 PORT = 60000
 FORMAT = 'utf-8'
 ADDRESS = (HOST, PORT)
-
-
-# Checks if the input is a valid row
-def validInput(row):
-    if not row.isnumeric():
-        return False
-    row = int(row) - 1
-
-    if row < 0 or row > 6:
-        return False
-
-    return True
-
-
-# Gets the row input from the user
-def getRow(table):
-    row = input("Please pick a row: ")
-
-    while not validInput(row):
-        coloredPrint("\n[ERROR] Row not in range! (1-7)", RED)
-        printTable(table)
-        row = input("Please pick a row: ")
-
-    return int(row) - 1
 
 
 def start_client():
