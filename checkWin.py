@@ -1,5 +1,9 @@
+import random, json
+
 ROWMAX = 7
 COLMAX = 6
+FORMAT = 'utf-8'
+SERVER_PLAYER = 7
 
 
 # Checks if there's a win on the sides
@@ -194,3 +198,54 @@ def checkSW(table, col, row, player, direction, counter):
     
 
     return [col, row, direction, counter]
+
+
+# Run all checkWin functions on a given column and row.
+def isWin(funcs, table, col, row, player):
+    try:
+        for func in funcs:
+            if func(table, col, row, player):
+                return True
+        return False
+
+    except IndexError as e:
+        print(f'[ERROR] {e}')
+
+
+# Print the table so the clients would be able to see the game board
+def printTable(table):
+    for line in table:
+        for element in line:
+            print(element, end='  ')
+        print()
+
+
+# Returns the first column index that no player set a unit
+# in a selected row.
+def columnIndexByRow(table, row):
+    for i in range(5, -1, -1):
+        if table[i][row] == 0:
+            return i
+    return False
+
+
+# Easy Mode
+def serverTurn(table, checkWinFuncs, conn, addr):
+    row = random.randint(0, 6)
+    col = columnIndexByRow(table, row)
+
+    while not col:
+        row = random.randint(0, 6)
+        col = columnIndexByRow(table, row)
+
+    table[col][row] = SERVER_PLAYER
+    win = isWin(checkWinFuncs, table, col, row, SERVER_PLAYER)
+
+    if win:
+        conn.send(json.dumps("YOU LOST!").encode(FORMAT))
+        time.sleep(0.2)
+        conn.send(json.dumps(table).encode(FORMAT))
+    else:
+        conn.send(json.dumps(table).encode(FORMAT))
+
+    return win

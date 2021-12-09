@@ -1,6 +1,6 @@
 # Imports
-from checkWin import checkWinDiagNEtoSW, checkWinDiagSEtoNW, checkWinSides, checkWinDown
-import socket, sys, threading, json, random, time
+from checkWin import *
+import socket, sys, threading, json, time
 
 
 # Define constants
@@ -8,7 +8,6 @@ HOST = '127.0.0.1'
 PORT = 60000
 FORMAT = 'utf-8'
 ADDRESS = (HOST, PORT)
-SERVER_PLAYER = 7
 
 # Setting up some functions and variables that the server would use to determine if a client won
 table = [
@@ -21,57 +20,6 @@ table = [
 ]
 
 checkWinFuncs = [checkWinDown, checkWinSides, checkWinDiagNEtoSW, checkWinDiagSEtoNW]
-
-
-# Run all checkWin functions on a given column and row.
-def isWin(funcs, table, col, row, player):
-    try:
-        for func in funcs:
-            if func(table, col, row, player):
-                return True
-        return False
-
-    except IndexError as e:
-        print(f'[ERROR] {e}')
-
-
-# Print the table so the clients would be able to see the game board
-def printTable(table):
-    for line in table:
-        for element in line:
-            print(element, end='  ')
-        print()
-
-
-# Returns the first column index that no player set a unit
-# in a selected row.
-def columnIndexByRow(table, row):
-    for i in range(5, -1, -1):
-        if table[i][row] == 0:
-            return i
-    return False
-
-
-# Easy Mode
-def serverTurn(table, conn, addr):
-    row = random.randint(0, 6)
-    col = columnIndexByRow(table, row)
-
-    while not col:
-        row = random.randint(0, 6)
-        col = columnIndexByRow(table, row)
-
-    table[col][row] = SERVER_PLAYER
-    win = isWin(checkWinFuncs, table, col, row, SERVER_PLAYER)
-
-    if win:
-        conn.send(json.dumps("YOU LOST!").encode(FORMAT))
-        time.sleep(0.2)
-        conn.send(json.dumps(table).encode(FORMAT))
-    else:
-        conn.send(json.dumps(table).encode(FORMAT))
-
-    return win
 
 
 # Server code
@@ -120,7 +68,7 @@ def handle_client1(conn, addr):
                 break
 
             # Server play EASY MODE
-            win = serverTurn(table, conn, addr)
+            win = serverTurn(table, checkWinFuncs, conn, addr)
         
 
         # conn.send(json.dumps("WIN!").encode(FORMAT))
