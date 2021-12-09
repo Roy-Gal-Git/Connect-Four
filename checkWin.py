@@ -1,4 +1,4 @@
-import random, json
+import random, json, os, sys, time
 
 ROWMAX = 7
 COLMAX = 6
@@ -214,10 +214,17 @@ def isWin(funcs, table, col, row, player):
 
 # Print the table so the clients would be able to see the game board
 def printTable(table):
+    print()
     for line in table:
         for element in line:
             print(element, end='  ')
         print()
+
+    print("_  " * 7)
+
+    for num in range(1, 8):
+        print(num, end="  ")
+    print("\n")
 
 
 # Returns the first column index that no player set a unit
@@ -227,6 +234,14 @@ def columnIndexByRow(table, row):
         if table[i][row] == 0:
             return i
     return False
+
+
+# Prints colored text in terminal
+def coloredPrint(text, color):
+    os.system('color')
+    sys.stdout.write(color)
+    print(text)
+    sys.stdout.write("\033[0;0m")
 
 
 # Easy Mode
