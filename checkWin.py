@@ -289,3 +289,11 @@ def serverTurn(table, checkWinFuncs, conn, addr):
         conn.send(json.dumps(table).encode(FORMAT))
 
     return win
+
+
+def serverTurnHardMode(table, checkWinFuncs, conn, addr):
+    for row in range(7):
+        col = columnIndexByRow(table, row)
+
+        if not col: continue
+            
