@@ -218,7 +218,12 @@ def printTable(table):
     print()
     for line in table:
         for element in line:
-            print(element, end='  ')
+            if element in range(1, 6):
+                coloredPrint(element, RED, end='  ')
+            elif element == 7:
+                coloredPrint(element, BLUE, end='  ')
+            else:
+                print(element, end='  ')
         print()
 
     print("_  " * 7)
@@ -238,10 +243,10 @@ def columnIndexByRow(table, row):
 
 
 # Prints colored text in terminal
-def coloredPrint(text, color):
+def coloredPrint(text, color, end='\n'):
     os.system('color')
     sys.stdout.write(color)
-    print(text)
+    print(text, end=end)
     sys.stdout.write("\033[0;0m")
 
 
