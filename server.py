@@ -29,6 +29,8 @@ def start_server():
     print(f"[LISTENING] server is listening on {HOST}")
     server_socket.listen(5)
     while True:
+        if threading.active_count() == 6:
+            continue
         if threading.active_count() == 1:
             print('[ACTIVE CONNECTIONS] 0\n')
 
@@ -71,7 +73,6 @@ def handle_client(conn, addr):
             win = serverTurn(table, checkWinFuncs, conn, addr)
         
 
-        # conn.send(json.dumps("WIN!").encode(FORMAT))
         print(f'\n[CLIENT DISCONNECTED] on address: {addr}\n')
 
     except Exception as e:
