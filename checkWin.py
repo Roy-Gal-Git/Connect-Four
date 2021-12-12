@@ -221,7 +221,7 @@ def printTable(table):
             if element in range(1, 6):
                 coloredPrint(element, RED, end='  ')
             elif element == 7:
-                coloredPrint(element, BLUE, end='  ')
+                coloredPrint(element, CYAN, end='  ')
             else:
                 print(element, end='  ')
         print()
