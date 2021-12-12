@@ -34,11 +34,11 @@ def start_server():
 
         connection, address = server_socket.accept()
 
-        thread = threading.Thread(target=handle_client1, args=(connection, address))
+        thread = threading.Thread(target=handle_client, args=(connection, address))
         thread.start()
 
 
-def handle_client1(conn, addr):
+def handle_client(conn, addr):
     table = [
         [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0],
