@@ -7,7 +7,7 @@ Works on your LAN!
 
 // You can get the host's IP from CMD using the command "/ipconfig" under IPv4.
 
-Instructions:
+# Instructions
 1. Run server.py
 2. Run client.py
 
