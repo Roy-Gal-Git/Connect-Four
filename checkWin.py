@@ -15,7 +15,6 @@ def checkWinSides(table, col, row, player):
 
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}!')
             return True
 
         if row >= ROWMAX:
@@ -45,7 +44,6 @@ def checkWinDown(table, col, row, player):
 
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}!')
             return True
 
         if col >= COLMAX:
@@ -67,7 +65,6 @@ def checkWinDiagSEtoNW(table, col, row, player):
     row += 1
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}!')
             return True
 
         if direction == 'se':
@@ -100,7 +97,6 @@ def checkWinDiagNEtoSW(table, col, row, player):
 
     for i in range(5):
         if counter == 4:
-            print(f'The winner is player #{player}!')
             return True
 
         if direction == 'ne':
@@ -239,7 +235,7 @@ def columnIndexByRow(table, row):
     for i in range(5, -1, -1):
         if table[i][row] == 0:
             return i
-    return False
+    return -1
 
 
 # Prints colored text in terminal
@@ -279,7 +275,7 @@ def serverTurn(table, checkWinFuncs, conn, addr):
     row = random.randint(0, 6)
     col = columnIndexByRow(table, row)
 
-    while not col:
+    while col == -1:
         row = random.randint(0, 6)
         col = columnIndexByRow(table, row)
 
@@ -296,9 +292,36 @@ def serverTurn(table, checkWinFuncs, conn, addr):
     return win
 
 
-def serverTurnHardMode(table, checkWinFuncs, conn, addr):
+# Hard mode
+def serverTurnHardMode(table, checkWinFuncs, conn, addr, player):
     for row in range(7):
         col = columnIndexByRow(table, row)
+        if isWin(checkWinFuncs, table, col, row, SERVER_PLAYER):
+            table[col][row] = SERVER_PLAYER
+            conn.send(json.dumps("YOU LOST!").encode(FORMAT))
+            time.sleep(0.2)
+            conn.send(json.dumps(table).encode(FORMAT))
+            return
+                
+        if col == -1:
+            continue
 
-        if not col: continue
-            
+    for row in range(7):
+        col = columnIndexByRow(table, row)
+        if isWin(checkWinFuncs, table, col, row, player):
+            table[col][row] = SERVER_PLAYER
+            conn.send(json.dumps(table).encode(FORMAT))
+            return
+                
+        if col == -1:
+            continue
+    
+    row = random.randint(0, 6)
+    col = columnIndexByRow(table, row)
+
+    while not col:
+        row = random.randint(0, 6)
+        col = columnIndexByRow(table, row)
+
+    table[col][row] = SERVER_PLAYER
+    conn.send(json.dumps(table).encode(FORMAT))
