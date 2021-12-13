@@ -14,15 +14,31 @@ def start_client():
         PLAYER = int(client_socket.recv(1024).decode(FORMAT))
         
         print("\n" + client_socket.recv(1024).decode(FORMAT))
+        difficulty = input('Enter 1 for Easy Mode or 2 for Hard Mode: ')
+        while difficulty != '1' and difficulty != '2':
+            coloredPrint('[ERROR] Invalid input!', RED)
+            difficulty = input('Enter 1 for Easy Mode or 2 for Hard Mode: ')
+
+        client_socket.send(difficulty.encode(FORMAT))
 
         table = json.loads(client_socket.recv(1024).decode(FORMAT))
         
         while True:
             tableCopy = table
             printTable(table)
-            row = getRow(table)
 
+            row = getRow(table)
             col = columnIndexByRow(table, row)
+            
+
+            while col == -1:
+                coloredPrint('\n[ERROR] IndexError: OUT OF BOUNDS!', RED)
+
+                printTable(table)
+
+                row = getRow(table)
+                col = columnIndexByRow(table, row)
+
             turn = [col, row, PLAYER]
 
             client_socket.send(json.dumps(turn).encode(FORMAT))

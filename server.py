@@ -56,6 +56,8 @@ def handle_client(conn, addr):
         conn.send(player.encode(FORMAT))
         conn.send(f'Welcome to Connect-Four!\nYou\'re player #{player}.'.encode(FORMAT))
         time.sleep(0.2)
+        difficulty = conn.recv(1024).decode(FORMAT)
+
         conn.send(json.dumps(table).encode(FORMAT))
         data = [0, 0, 1]
         win = False
@@ -69,9 +71,15 @@ def handle_client(conn, addr):
                 conn.send(json.dumps(table).encode(FORMAT))
                 break
 
-            # Server play EASY MODE
-            win = serverTurn(table, checkWinFuncs, conn, addr)
-        
+            
+
+            if difficulty == '1':
+                win = serverTurn(table, checkWinFuncs, conn, addr)
+            else:
+                win = serverTurnHardMode(table, checkWinFuncs, conn, addr, data[2])
+
+
+
 
         print(f'\n[CLIENT DISCONNECTED] on address: {addr}\n')
 
