@@ -57,6 +57,7 @@ def handle_client(conn, addr):
         conn.send(f'Welcome to Connect-Four!\nYou\'re player #{player}.'.encode(FORMAT))
         time.sleep(0.2)
         difficulty = conn.recv(1024).decode(FORMAT)
+        num_of_wins = conn.recv(1024).decode(FORMAT)
 
         conn.send(json.dumps(table).encode(FORMAT))
         data = [0, 0, 1]
