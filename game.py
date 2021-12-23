@@ -1,8 +1,11 @@
+# Lina Biniashvili 324945732
+# Omer Fisher 326681269
+
 from checkWin import *
 
 checkWinFuncs = [checkWinDown, checkWinSides, checkWinDiagNEtoSW, checkWinDiagSEtoNW]
 
-
+# starts the game on the client side
 def client_game(client_socket, PLAYER):
     table = json.loads(client_socket.recv(1024).decode(FORMAT))
     time.sleep(0.2)
@@ -55,6 +58,7 @@ def client_game(client_socket, PLAYER):
 
 
 
+# starts the game on the server side
 def server_game(conn, addr, table, difficulty, game):
     conn.send(json.dumps(table).encode(FORMAT))
     time.sleep(0.2)
@@ -93,7 +97,7 @@ def server_game(conn, addr, table, difficulty, game):
     print(f'\n[CLIENT DISCONNECTED] on address: {addr}\n')
 
 
-# Easy Mode
+# Easy Mode (server plays randomly)
 def serverTurn(table, checkWinFuncs, conn, game):
     game['turns'] += 1
     row = random.randint(0, 6)
@@ -123,7 +127,7 @@ def serverTurn(table, checkWinFuncs, conn, game):
     return win
 
 
-# Hard mode
+# Hard mode (plays to defeat you if it can and prevent you from winning if it can)
 def serverTurnHardMode(table, checkWinFuncs, conn, player, game):
     game['turns'] += 1
 

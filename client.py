@@ -1,3 +1,6 @@
+# Lina Biniashvili 324945732
+# Omer Fisher 326681269
+
 import socket, time
 from colors import *
 from checkWin import coloredPrint
@@ -8,7 +11,7 @@ PORT = 60000
 FORMAT = 'utf-8'
 ADDRESS = (HOST, PORT)
 
-
+# Prepares the client to start the game with all of the information it needs
 def start_client():
     try:
         start_time = time.time()
@@ -16,9 +19,15 @@ def start_client():
 
         client_socket.connect(ADDRESS)
 
+        welcome_message = client_socket.recv(1024).decode(FORMAT)
+        time.sleep(0.2)
+        if welcome_message == "Too many connections, Please try again later!":
+            coloredPrint("\n" + welcome_message + "\n", RED)
+            client_socket.close()
+
         PLAYER = int(client_socket.recv(1024).decode(FORMAT))
-    
-        print("\n" + client_socket.recv(1024).decode(FORMAT))
+        
+        print("\n" + welcome_message)
 
         wants_to_play = input(f'\nMenu:\n1. Exit\n2. Play\n>>> [Player {PLAYER}]: ')
         while wants_to_play != '1' and wants_to_play != '2':
@@ -27,7 +36,7 @@ def start_client():
         if wants_to_play == '1':
             print('\n[EXIT...]')
             time.sleep(1)
-            return
+            exit()
 
         difficulty = input(f'\nMode:\n1. Easy\n2. Hard\n>>> [Player {PLAYER}]: ')
         while difficulty != '1' and difficulty != '2':
@@ -55,7 +64,8 @@ def start_client():
             game = client_game(client_socket, PLAYER)
             print(f"\nResults:\n\
                 \nPlayer: {game['player']}\
-                \nServer: {game['server']}")
+                \nServer: {game['server']}\
+                \nTotal turns played: {game['turns']}")
                 
             if game['server'] == game['total']:
                 print(f"Total rounds played: {game['server'] + game['player']}\nTotal turns played: {game['turns']}\nTotal time played (Hours/Minutes/Seconds): {round(time.time() - start_time) // 3600}::{round(time.time() - start_time) // 60}::{round(time.time() - start_time) % 60}")
