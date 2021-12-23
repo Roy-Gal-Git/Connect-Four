@@ -12,6 +12,7 @@ ADDRESS = (HOST, PORT)
 def start_client():
     try:
         start_time = time.time()
+        punishment = { 'time': 60, 'strikes': 0 }
 
         client_socket.connect(ADDRESS)
 
@@ -38,8 +39,16 @@ def start_client():
         num_of_wins = input(f'\nPlease choose a number of wins for a player to win the game\n>>> [Player {PLAYER}]: ')
         while not num_of_wins.isnumeric() or int(num_of_wins) <= 0:
             coloredPrint('\n[ERROR] Invalid input!', RED)
-            num_of_wins = input(f'\nPlease choose a number of wins for a player to win the game\n>>> [Player {PLAYER}]: ')
+            punishment['strikes'] += 1
 
+            if punishment['strikes'] == 5:
+                punishment['strikes'] = 0
+                coloredPrint(f"\nToo many invalid inputs!\nRestricted for {punishment['time']} seconds.", MAGENTA)
+                time.sleep(punishment['time'])
+                punishment['time'] *= 2
+
+            num_of_wins = input(f'\nPlease choose a number of wins for a player to win the game\n>>> [Player {PLAYER}]: ')
+        
         client_socket.send(num_of_wins.encode(FORMAT))
 
         while True:
@@ -49,7 +58,7 @@ def start_client():
                 \nServer: {game['server']}")
                 
             if game['server'] == game['total']:
-                print(f"Rounds: {game['server'] + game['player']}\nTurns: {game['turns']}\nTotal time played (Hours/Minutes/Seconds): {(time.time() - start_time) % 3600}::{(time.time() - start_time) % 60}::{time.time() - start_time}")
+                print(f"Total rounds played: {game['server'] + game['player']}\nTotal turns played: {game['turns']}\nTotal time played (Hours/Minutes/Seconds): {round(time.time() - start_time) // 3600}::{round(time.time() - start_time) // 60}::{round(time.time() - start_time) % 60}")
                 coloredPrint('\nYou lost the game! Good luck next time :)\n', MAGENTA)
                 break
             
