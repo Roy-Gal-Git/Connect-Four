@@ -26,6 +26,8 @@ def client_game(client_socket, PLAYER):
             row = getRow(table, punishment)
             col = columnIndexByRow(table, row)
 
+        punishment['strikes'] = 0
+        
         turn = [col, row, PLAYER]
 
         client_socket.send(json.dumps(turn).encode(FORMAT))
