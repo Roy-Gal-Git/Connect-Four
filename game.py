@@ -4,8 +4,6 @@ checkWinFuncs = [checkWinDown, checkWinSides, checkWinDiagNEtoSW, checkWinDiagSE
 
 
 def client_game(client_socket, PLAYER):
-    punishment = { 'time': 60, 'strikes': 0 }
-
     table = json.loads(client_socket.recv(1024).decode(FORMAT))
     time.sleep(0.2)
     game = json.loads(client_socket.recv(1024).decode(FORMAT))
@@ -14,7 +12,7 @@ def client_game(client_socket, PLAYER):
         tableCopy = table
         printTable(table)
 
-        row = getRow(table, punishment)
+        row = getRow(table)
         col = columnIndexByRow(table, row)
         
 
@@ -23,11 +21,10 @@ def client_game(client_socket, PLAYER):
 
             printTable(table)
 
-            row = getRow(table, punishment)
+            row = getRow(table)
             col = columnIndexByRow(table, row)
 
-        punishment['strikes'] = 0
-        
+
         turn = [col, row, PLAYER]
 
         client_socket.send(json.dumps(turn).encode(FORMAT))
@@ -138,7 +135,9 @@ def serverTurnHardMode(table, checkWinFuncs, conn, player, game):
             conn.send(json.dumps("YOU LOST!").encode(FORMAT))
             time.sleep(0.2)
             conn.send(json.dumps(table).encode(FORMAT))
-            return
+            time.sleep(0.2)
+            conn.send(json.dumps(game).encode(FORMAT))
+            return True
                 
         if col == -1:
             continue
