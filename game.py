@@ -1,6 +1,3 @@
-# Lina Biniashvili 324945732
-# Omer Fisher 326681269
-
 from checkWin import *
 
 checkWinFuncs = [checkWinDown, checkWinSides, checkWinDiagNEtoSW, checkWinDiagSEtoNW]

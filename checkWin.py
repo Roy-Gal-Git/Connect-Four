@@ -1,6 +1,3 @@
-# Lina Biniashvili 324945732
-# Omer Fisher 326681269
-
 import random, json, os, sys, time
 from colors import *
 

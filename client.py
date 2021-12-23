@@ -1,6 +1,3 @@
-# Lina Biniashvili 324945732
-# Omer Fisher 326681269
-
 import socket, time
 from colors import *
 from checkWin import coloredPrint
