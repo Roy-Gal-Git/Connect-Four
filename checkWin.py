@@ -258,11 +258,17 @@ def validInput(row):
 
 
 # Gets the row input from the user
-def getRow(table):
+def getRow(table, punishment):
     row = input("Please pick a row: ")
-
     while not validInput(row):
+        print(punishment)
+        punishment['strikes'] += 1
         coloredPrint("\n[ERROR] Row not in range! (1-7)", RED)
+        if punishment['strikes'] == 5:
+            punishment['strikes'] = 0
+            coloredPrint(f"\nToo many invalid inputs!\nRestricted for {punishment['time']} seconds.", MAGENTA)
+            time.sleep(punishment['time'])
+            punishment['time'] *= 2
         printTable(table)
         row = input("Please pick a row: ")
 

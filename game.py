@@ -4,6 +4,8 @@ checkWinFuncs = [checkWinDown, checkWinSides, checkWinDiagNEtoSW, checkWinDiagSE
 
 
 def client_game(client_socket, PLAYER):
+    punishment = { 'time': 60, 'strikes': 0 }
+
     table = json.loads(client_socket.recv(1024).decode(FORMAT))
     time.sleep(0.2)
     game = json.loads(client_socket.recv(1024).decode(FORMAT))
@@ -12,7 +14,7 @@ def client_game(client_socket, PLAYER):
         tableCopy = table
         printTable(table)
 
-        row = getRow(table)
+        row = getRow(table, punishment)
         col = columnIndexByRow(table, row)
         
 
@@ -21,7 +23,7 @@ def client_game(client_socket, PLAYER):
 
             printTable(table)
 
-            row = getRow(table)
+            row = getRow(table, punishment)
             col = columnIndexByRow(table, row)
 
         turn = [col, row, PLAYER]
