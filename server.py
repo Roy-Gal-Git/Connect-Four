@@ -1,25 +1,13 @@
 # Imports
 from checkWin import *
-import socket, sys, threading, json, time
-
+import socket, threading, time
+from game import server_game
 
 # Define constants
 HOST = '127.0.0.1'
 PORT = 60000
 FORMAT = 'utf-8'
 ADDRESS = (HOST, PORT)
-
-# Setting up some functions and variables that the server would use to determine if a client won
-table = [
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0]
-]
-
-checkWinFuncs = [checkWinDown, checkWinSides, checkWinDiagNEtoSW, checkWinDiagSEtoNW]
 
 
 # Server code
@@ -41,48 +29,31 @@ def start_server():
 
 
 def handle_client(conn, addr):
-    table = [
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0]
-    ]
     print(f'[CLIENT CONNECTED] on address {addr}')
 
     try:
         player = str(threading.active_count() -1)
         conn.send(player.encode(FORMAT))
+        time.sleep(0.2)
         conn.send(f'Welcome to Connect-Four!\nYou\'re player #{player}.'.encode(FORMAT))
         time.sleep(0.2)
         difficulty = conn.recv(1024).decode(FORMAT)
         num_of_wins = conn.recv(1024).decode(FORMAT)
+        game = { 'total': int(num_of_wins), 'server': 0, 'player': 0 , 'turns': 0}
 
-        conn.send(json.dumps(table).encode(FORMAT))
-        data = [0, 0, 1]
-        win = False
+        while True:
+            table = [
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]
+            ]
 
-        while not win:
-            data = json.loads(conn.recv(1024).decode(FORMAT))
-            table[data[0]][data[1]] = data[2]
-            win = isWin(checkWinFuncs, table, data[0], data[1], data[2])
-            if win:
-                table = "WIN!"
-                conn.send(json.dumps(table).encode(FORMAT))
+            game = server_game(conn, addr, table, difficulty, game)
+            if game['server'] == game['total'] or game['player'] == game['total']:
                 break
-
-            
-
-            if difficulty == '1':
-                win = serverTurn(table, checkWinFuncs, conn, addr)
-            else:
-                win = serverTurnHardMode(table, checkWinFuncs, conn, addr, data[2])
-
-
-
-
-        print(f'\n[CLIENT DISCONNECTED] on address: {addr}\n')
 
     except Exception as e:
         print(e)

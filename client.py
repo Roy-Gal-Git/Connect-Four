@@ -1,6 +1,7 @@
-import socket, time, json
+import socket, time
 from colors import *
-from checkWin import printTable, columnIndexByRow, getRow, coloredPrint
+from checkWin import coloredPrint
+from game import client_game
 
 HOST = '127.0.0.1'
 PORT = 60000
@@ -11,8 +12,9 @@ ADDRESS = (HOST, PORT)
 def start_client():
     try:
         client_socket.connect(ADDRESS)
+
         PLAYER = int(client_socket.recv(1024).decode(FORMAT))
-        
+    
         print("\n" + client_socket.recv(1024).decode(FORMAT))
 
         wants_to_play = input(f'\nMenu:\n1. Exit\n2. Play\n>>> [Player {PLAYER}]: ')
@@ -21,7 +23,7 @@ def start_client():
             wants_to_play = input(f'\nMenu:\n1. Exit\n2. Play\n>>> [Player {PLAYER}]: ')
         if wants_to_play == '1':
             print('\n[EXIT...]')
-            time.sleep(2)
+            time.sleep(1)
             return
 
         difficulty = input(f'\nMode:\n1. Easy\n2. Hard\n>>> [Player {PLAYER}]: ')
@@ -36,49 +38,22 @@ def start_client():
             coloredPrint('\n[ERROR] Invalid input!', RED)
             num_of_wins = input(f'\nPlease choose a number of wins for a player to win the game\n>>> [Player {PLAYER}]: ')
 
-        wins = { 'total': num_of_wins, 'server': 0, 'player': 0 }
-
         client_socket.send(num_of_wins.encode(FORMAT))
 
-        table = json.loads(client_socket.recv(1024).decode(FORMAT))
-        
         while True:
-            tableCopy = table
-            printTable(table)
-
-            row = getRow(table)
-            col = columnIndexByRow(table, row)
+            game = client_game(client_socket, PLAYER)
+            print(f"\nResults:\n\
+                \nPlayer: {game['player']}\
+                \nServer: {game['server']}\
+                \nTurnes played: {game['turns']}")
+            if game['server'] == game['total']:
+                coloredPrint('\nYou lost the game! Good luck next time :)\n', MAGENTA)
+                break
             
-
-            while col == -1:
-                coloredPrint('\n[ERROR] IndexError: OUT OF BOUNDS!', RED)
-
-                printTable(table)
-
-                row = getRow(table)
-                col = columnIndexByRow(table, row)
-
-            turn = [col, row, PLAYER]
-
-            client_socket.send(json.dumps(turn).encode(FORMAT))
-            
-            table = json.loads(client_socket.recv(1024).decode(FORMAT))
-            
-            tableCopy[col][row] = PLAYER
-            
-            if table == "WIN!":
-                printTable(tableCopy)
-                print("You won!")
+            if game['player'] == game['total']:
+                coloredPrint('\nYou won the game! Hurray!\n', MAGENTA)
                 break
 
-            elif table == "YOU LOST!":
-                tableCopy = json.loads(client_socket.recv(1024).decode(FORMAT))
-                printTable(tableCopy)
-                print("You lost!")
-                break
-
-            time.sleep(0.5)
-        
     except Exception as e:
         print(e)
 

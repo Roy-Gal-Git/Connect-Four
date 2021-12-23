@@ -6,7 +6,6 @@ COLMAX = 6
 FORMAT = 'utf-8'
 SERVER_PLAYER = 7
 
-
 # Checks if there's a win on the sides
 def checkWinSides(table, col, row, player):
     direction = 'right'
@@ -268,60 +267,3 @@ def getRow(table):
         row = input("Please pick a row: ")
 
     return int(row) - 1
-
-
-# Easy Mode
-def serverTurn(table, checkWinFuncs, conn, addr):
-    row = random.randint(0, 6)
-    col = columnIndexByRow(table, row)
-
-    while col == -1:
-        row = random.randint(0, 6)
-        col = columnIndexByRow(table, row)
-
-    table[col][row] = SERVER_PLAYER
-    win = isWin(checkWinFuncs, table, col, row, SERVER_PLAYER)
-
-    if win:
-        conn.send(json.dumps("YOU LOST!").encode(FORMAT))
-        time.sleep(0.2)
-        conn.send(json.dumps(table).encode(FORMAT))
-    else:
-        conn.send(json.dumps(table).encode(FORMAT))
-
-    return win
-
-
-# Hard mode
-def serverTurnHardMode(table, checkWinFuncs, conn, addr, player):
-    for row in range(7):
-        col = columnIndexByRow(table, row)
-        if isWin(checkWinFuncs, table, col, row, SERVER_PLAYER):
-            table[col][row] = SERVER_PLAYER
-            conn.send(json.dumps("YOU LOST!").encode(FORMAT))
-            time.sleep(0.2)
-            conn.send(json.dumps(table).encode(FORMAT))
-            return
-                
-        if col == -1:
-            continue
-
-    for row in range(7):
-        col = columnIndexByRow(table, row)
-        if isWin(checkWinFuncs, table, col, row, player):
-            table[col][row] = SERVER_PLAYER
-            conn.send(json.dumps(table).encode(FORMAT))
-            return
-                
-        if col == -1:
-            continue
-    
-    row = random.randint(0, 6)
-    col = columnIndexByRow(table, row)
-
-    while not col:
-        row = random.randint(0, 6)
-        col = columnIndexByRow(table, row)
-
-    table[col][row] = SERVER_PLAYER
-    conn.send(json.dumps(table).encode(FORMAT))
